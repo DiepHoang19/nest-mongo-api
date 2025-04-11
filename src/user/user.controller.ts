@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Query } from '@nestjs/common';
 import { UserService } from './user.service';
+import { AuthGuard } from './auth.guard';
 
 @Controller('users')
 export class UserController {
@@ -24,8 +25,15 @@ export class UserController {
     return this.userService.login(payload);
   }
 
-  @Get()
+  @UseGuards(AuthGuard)
+  @Get('/list')
   findAll() {
     return this.userService.findAll();
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/detail')
+  findOneUser(@Query('user_id') user_id: string) {
+    return this.userService.findOneUser(user_id);
   }
 }

@@ -7,6 +7,7 @@ import { Model } from 'mongoose';
 import { User } from 'src/schema/user.schema';
 import { comparePassword, hashPassword } from 'src/utils/hash-password';
 import { JwtService } from '@nestjs/jwt';
+import { SECRET_KEY } from 'src/contants/contants';
 
 @Injectable()
 export class UserService {
@@ -44,6 +45,21 @@ export class UserService {
     return this.userModel.find().exec();
   }
 
+  async findOneUser(user_id: string): Promise<any> {
+    const dataUser = await this.userModel.findById(user_id).exec();
+    const userObject = {
+      full_name: dataUser?.full_name,
+      email: dataUser?.email,
+      role: dataUser?.role,
+      _id: dataUser?.id,
+    };
+    return {
+      data: userObject,
+      status_code: HttpStatus.OK,
+      message: 'success',
+    };
+  }
+
   async login(payload: { email: string; password: string }) {
     const user = await this.userModel.findOne({ email: payload.email });
     if (!user) {
@@ -55,10 +71,14 @@ export class UserService {
       throw new UnauthorizedException('Sai mật khẩu');
     }
 
-    const token = this.jwtService.sign({
+    const payloadToken = {
       sub: user._id,
-      email: user.email,
+      username: user.full_name,
+      password: user.password,
       role: user.role,
+    };
+    const generateToken = await this.jwtService.signAsync(payloadToken, {
+      secret: SECRET_KEY,
     });
 
     return {
@@ -67,7 +87,7 @@ export class UserService {
         full_name: user.full_name,
         email: user.email,
         role: user.role,
-        accessToken: token,
+        accessToken: generateToken,
       },
       status_code: HttpStatus.OK,
       message: 'success',
