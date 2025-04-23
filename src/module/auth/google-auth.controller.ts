@@ -4,8 +4,16 @@ import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
 
 interface GoogleUser {
+  displayName: string;
   id: string;
-  email: string;
+  name: { familyName: string; givenName: string };
+  emails: [{ value: string; verified: true }];
+  photos: [
+    {
+      value: string;
+    },
+  ];
+  provider: string;
 }
 
 @Controller('auth/google')
@@ -23,8 +31,16 @@ export class GoogleAuthController {
   @UseGuards(AuthGuard('google'))
   googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
     const user = req.user as GoogleUser;
-    const token = this.jwtService.sign({ id: user.id, email: user.email });
+    const token = this.jwtService.sign({ id: user.id, email: user.emails });
 
-    return res.redirect(`http://localhost:3000?token=${token}`);
+    const { displayName, photos, emails } = user;
+    const queryParams = new URLSearchParams({
+      full_name: displayName,
+      avatar: photos?.[0]?.value || '',
+      email: emails?.[0]?.value || '',
+      token,
+    });
+
+    return res.redirect(`http://localhost:3000?${queryParams.toString()}`);
   }
 }

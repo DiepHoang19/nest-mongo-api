@@ -1,6 +1,19 @@
-import { Controller, Get, Post, Body, UseGuards, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  UseGuards,
+  Query,
+  Delete,
+  Param,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from './auth.guard';
+
+export class DeleteManyUserDto {
+  user_id: { id: string }[];
+}
 
 @Controller('users')
 export class UserController {
@@ -35,5 +48,17 @@ export class UserController {
   @Get('/detail')
   findOneUser(@Query('user_id') user_id: string) {
     return this.userService.findOneUser(user_id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete('/delete/:id')
+  async deleteUser(@Param('id') id: string): Promise<any> {
+    return this.userService.deleteUserWhereId(id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete('/delete/many')
+  async deleteManyUsers(@Body() dto: DeleteManyUserDto): Promise<any> {
+    return this.userService.deleteUserWhereManyUser(dto.user_id);
   }
 }

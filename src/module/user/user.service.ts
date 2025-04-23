@@ -93,4 +93,48 @@ export class UserService {
       message: 'success',
     };
   }
+
+  async deleteUserWhereId(user_id: string): Promise<any> {
+    const result = await this.userModel.updateOne(
+      { _id: user_id },
+      { $set: { is_deleted: true, updatedAt: new Date() } },
+    );
+    return {
+      status: HttpStatus.OK,
+      data: result,
+      message: 'success',
+    };
+  }
+
+  async deleteUserWhereManyUser(user_id: Array<{ id: string }>): Promise<any> {
+    const ids = user_id.map((user) => user.id); // chuyển về mảng ID
+    const result = await this.userModel.updateMany(
+      { _id: { $in: ids } },
+      { $set: { is_deleted: true, updatedAt: new Date() } },
+    );
+
+    return {
+      status: HttpStatus.OK,
+      data: result,
+      message: 'success',
+    };
+  }
+
+  async updateUser(
+    user_id: string,
+    payload: { email: string; full_name: string; password: string },
+  ): Promise<any> {
+    const passwordHash = await hashPassword(payload.password);
+    await this.userModel.updateOne(
+      { _id: user_id },
+      {
+        $set: {
+          email: payload.email,
+          full_name: payload.full_name,
+          password: passwordHash,
+          updatedAt: new Date(),
+        },
+      },
+    );
+  }
 }
