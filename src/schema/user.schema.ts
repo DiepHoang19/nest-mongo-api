@@ -2,15 +2,15 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-@Schema()
+@Schema({ timestamps: true })
 export class User extends Document {
-  @Prop()
+  @Prop({ required: true })
   full_name: string;
 
   @Prop()
   password: string;
 
-  @Prop()
+  @Prop({ unique: true })
   email: string;
 
   @Prop()
@@ -18,6 +18,9 @@ export class User extends Document {
 
   @Prop()
   role: string;
+
+  @Prop({ default: false })
+  is_deleted: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
