@@ -25,7 +25,7 @@ export class ProductService {
         .find({ is_deleted: false })
         .skip(skip)
         .limit(limit)
-        .sort({ createdAt: -1 })
+        .sort({ createdAt: -1 }) // sắp xếp những bản ghi có ngày tạo mới nhất lên đầu
         .exec(),
       this.productModel.countDocuments({ is_deleted: false }),
     ]);

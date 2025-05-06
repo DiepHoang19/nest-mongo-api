@@ -23,7 +23,6 @@ export class ProductController {
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
   ): Promise<PaginatedProductResponse> {
-    console.log('page', page);
     return this.productService.findAll(Number(page), Number(limit));
   }
 
