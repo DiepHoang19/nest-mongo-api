@@ -15,7 +15,7 @@ export class DeleteManyUserDto {
   user_id: { id: string }[];
 }
 
-@Controller('users')
+@Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -38,7 +38,7 @@ export class UserController {
     return this.userService.login(payload);
   }
 
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Get('/list')
   findAll() {
     return this.userService.findAll();

@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './module/user/user.module';
 import { ProductModule } from './module/products/products.module';
 import { GoogleAuthModule } from './module/auth/google-auth.module';
+import { UploadController } from './module/upload/upload.controller';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { GoogleAuthModule } from './module/auth/google-auth.module';
     ProductModule,
     GoogleAuthModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, UploadController],
   providers: [AppService],
 })
 export class AppModule {}

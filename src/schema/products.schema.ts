@@ -9,13 +9,16 @@ export class Products extends Document {
   @Prop()
   content: string;
 
-  @Prop({ unique: true })
+  @Prop({ unique: true, type: mongoose.Schema.Types.String })
   slug: string;
+
+  @Prop({ unique: true, type: mongoose.Schema.Types.Number })
+  quantity: string;
 
   @Prop({ type: mongoose.Schema.Types.Decimal128 })
   price: Decimal128;
 
-  @Prop()
+  @Prop({ type: mongoose.Schema.Types.String })
   description: string;
 
   @Prop({ type: Date })
